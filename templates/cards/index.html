@@ -1,0 +1,186 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meow-Dicina Flashcards | Estudio Tierno</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+
+<body>
+
+    <div class="decoration" style="top: 10%; left: 5%;">🐱</div>
+    <div class="decoration" style="top: 20%; right: 8%;">🩺</div>
+    <div class="decoration" style="bottom: 15%; left: 7%;">💊</div>
+    <div class="decoration" style="bottom: 10%; right: 5%;">🐾</div>
+    <div class="decoration" style="top: 40%; left: 2%;">❤️</div>
+
+    <div class="container">
+        <header>
+            <div class="logo">🐱 Kustman</div>
+            <nav class="nav-buttons">
+                <button class="btn" id="nav-home">📚 Mis Notas</button>
+                <button class="btn" id="nav-categories" onclick="showView('categories')">📂 Categorías</button>
+                <button class="btn btn-purple" id="nav-add">✨ Nueva</button>
+                <button class="btn" id="start-game-btn" disabled>🎮 Estudiar</button>
+            </nav>
+        </header>
+
+        <!-- HOME VIEW (Library) -->
+        <main id="view-home" class="view active">
+            <div id="empty-container" class="empty-state">
+                <div style="font-size: 4rem; margin-bottom: 1rem;">😴</div>
+                <h2>Tu maletín está vacío...</h2>
+                <button class="btn btn-purple" onclick="prepareEditCard()">Crear mi primera tarjeta 🩹</button>
+            </div>
+
+            <div id="library-container" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h2 style="font-weight: 600; color: var(--text-main);">Mis Tarjetas Médicas 🩺</h2>
+                    <!-- <button class="btn btn-danger" onclick="clearAllCards()" style="padding: 0.5rem 1rem; font-size: 0.7rem;">Vaciar Maletín</button> -->
+                </div>
+                <div class="flashcards-grid" id="cards-grid">
+                    <!-- Cards injection -->
+                </div>
+            </div>
+        </main>
+
+        <!-- CATEGORIES VIEW -->
+        <section id="view-categories" class="view">
+            <h2 style="margin-bottom: 2rem; color: var(--primary-pink); text-align: center;">📂 Gestión de Categorías
+            </h2>
+
+            <div class="card-form" style="margin-bottom: 2rem;">
+                <div style="display: flex; gap: 1rem;">
+                    <input type="text" id="cat-name-input" placeholder="Nombre de la categoría..."
+                        style="flex:1; padding: 0.8rem; border-radius: 15px; border: 2px solid var(--secondary-pink); outline:none;">
+                    <button class="btn" id="btn-save-cat" onclick="saveCategory()">✨ Crear Categoría</button>
+                </div>
+            </div>
+
+            <div class="flashcards-grid" id="categories-list">
+                <!-- Categories Injection -->
+            </div>
+        </section>
+
+        <!-- GAME SETUP VIEW -->
+        <section id="view-setup" class="view">
+            <div class="results-view" style="max-width: 600px; margin: 0 auto; padding: 2rem;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🎒</div>
+                <h2 style="margin-bottom: 1rem;">¿Qué vamos a estudiar hoy?</h2>
+                <p style="color: var(--text-dim); margin-bottom: 2rem;">Selecciona las categorías que quieres repasar
+                </p>
+
+                <div class="flashcards-grid" id="setup-categories-list"
+                    style="margin-bottom: 2rem; grid-template-columns: 1fr; text-align: left;">
+                    <!-- Setup List Injection -->
+                </div>
+
+                <button class="btn btn-purple"
+                    style="width: 100%; justify-content: center; font-size: 1.2rem; padding: 1rem;"
+                    onclick="startGameFromSetup()">🚀 ¡A Estudiar!</button>
+            </div>
+        </section>
+
+        <!-- ADD VIEW -->
+        <section id="view-add" class="view">
+            <div class="card-form">
+                <h2 id="form-title" style="margin-bottom: 2rem; color: var(--primary-pink); text-align: center;">🍎
+                    Nueva Tarjeta de Estudio</h2>
+                <div class="form-group">
+                    <label>Categoría</label>
+                    <select id="card-category"
+                        style="width: 100%; padding: 0.8rem; border-radius: 15px; border: 2px solid var(--secondary-pink); background: white; outline: none; color: var(--text-main);">
+                        <!-- Options injected via JS -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Frente (Concepto o Síntoma)</label>
+                    <textarea id="card-front" placeholder="Ej: Anatomía del corazón..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Reverso (Tratamiento o Definición)</label>
+                    <textarea id="card-back" placeholder="Escribe la respuesta aquí..."></textarea>
+                </div>
+                <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1rem;">
+                    <button class="btn" style="background: var(--primary-pink); color: white;" onclick="saveCard()">💖
+                        Guardar</button>
+                    <button class="btn" style="border-color: #ccc; color: #999; box-shadow: 0 4px 0 #ccc;"
+                        onclick="showView('home')">Cancelar</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- GAME VIEW -->
+        <section id="view-game" class="view">
+            <div class="game-container">
+                <div class="game-stats">
+                    <div class="stat">
+                        <span class="stat-value" id="current-card-idx">1</span>
+                        <span style="font-size: 0.75rem; color: var(--text-dim); font-weight: 600;">PASO</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value stat-success" id="success-count">0</span>
+                        <span style="font-size: 0.75rem; color: var(--text-dim); font-weight: 600;">LOGRADO</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value stat-fail" id="fail-count">0</span>
+                        <span style="font-size: 0.75rem; color: var(--text-dim); font-weight: 600;">REPASAR</span>
+                    </div>
+                </div>
+
+                <div class="flip-card" id="main-flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front" id="game-front">
+                            <!-- Question -->
+                        </div>
+                        <div class="flip-card-back" id="game-back">
+                            <!-- Answer -->
+                        </div>
+                    </div>
+                </div>
+
+                <p
+                    style="color: var(--primary-pink); font-size: 0.9rem; font-weight: 600; animation: pulse 2s infinite;">
+                    🐾 TOCA PARA REVELAR LA RESPUESTA 🐾</p>
+
+                <div class="game-controls" id="game-controls">
+                    <button class="btn btn-danger" onclick="handleGameAnswer(false)">😿 No lo supe</button>
+                    <button class="btn"
+                        style="border-color: var(--success); color: var(--success); box-shadow: 0 4px 0 var(--success);"
+                        onclick="handleGameAnswer(true)">😸 ¡Lo supe!</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- RESULTS VIEW -->
+        <section id="view-results" class="view results-view">
+            <div style="font-size: 4rem; margin-bottom: 1rem;">🎉</div>
+            <h2>¡Excelente Guardián!</h2>
+            <p style="margin-bottom: 2rem; color: var(--text-dim);">Has completado tu ronda de estudio.</p>
+            <div class="game-stats"
+                style="justify-content: center; margin-bottom: 3rem; border: none; box-shadow: none;">
+                <div class="stat">
+                    <span class="stat-value stat-success" id="final-success">0</span>
+                    <span style="font-weight: 600;">ÉXITOS</span>
+                </div>
+                <div style="width: 2px; background: #eee; margin: 0 1rem;"></div>
+                <div class="stat">
+                    <span class="stat-value stat-fail" id="final-fail">0</span>
+                    <span style="font-weight: 600;">FALLOS</span>
+                </div>
+            </div>
+            <button class="btn"
+                style="background: var(--medical-blue); border-color: var(--medical-blue); color: white; box-shadow: 0 4px 0 #7fb9f0;"
+                onclick="showView('home')">Volver al Inicio 😺</button>
+        </section>
+    </div>
+
+    <div id="toast">¡Tarjeta guardada con éxito! 🐾</div>
+
+    <script src="{% static 'js/app.js' %}"></script>
+</body>
+
+</html>

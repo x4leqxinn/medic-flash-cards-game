@@ -43,7 +43,8 @@
         }
 
         .container {
-            max-width: 800px;
+            max-width: 1000px;
+            /* Expanded from 800px */
             margin: 0 auto;
             padding: 2rem;
             position: relative;
@@ -64,26 +65,31 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 3rem;
-            padding: 1.5rem;
-            background: rgba(255, 255, 255, 0.8);
+            padding: 2rem;
+            /* Increased padding */
+            background: rgba(255, 255, 255, 0.9);
+            /* Slightly more opaque */
             backdrop-filter: blur(10px);
-            border-radius: 25px;
+            border-radius: 35px;
+            /* More rounded */
             box-shadow: var(--shadow);
             border: 2px solid var(--secondary-pink);
         }
 
         .logo {
-            font-size: 1.8rem;
-            font-weight: 700;
+            font-size: 2.2rem;
+            /* Larger logo */
+            font-weight: 800;
             color: var(--primary-pink);
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.8rem;
         }
 
         .nav-buttons {
             display: flex;
-            gap: 0.8rem;
+            gap: 1rem;
+            /* More gap */
         }
 
         /* Buttons */
@@ -91,16 +97,19 @@
             background: white;
             border: 2px solid var(--primary-pink);
             color: var(--primary-pink);
-            padding: 0.7rem 1.4rem;
+            padding: 0.8rem 1.6rem;
+            /* Larger buttons */
             border-radius: 50px;
             cursor: pointer;
-            font-weight: 600;
-            font-size: 0.9rem;
+            font-weight: 700;
+            /* Bolder text */
+            font-size: 1rem;
+            /* Larger text */
             transition: var(--transition);
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
-            box-shadow: 0 4px 0 var(--primary-pink);
+            gap: 0.6rem;
+            box-shadow: 0 5px 0 var(--primary-pink);
             position: relative;
             top: 0;
         }
@@ -243,13 +252,15 @@
         }
 
         .mini-card h3 {
-            font-size: 1.1rem;
+            font-size: 1.25rem;
+            /* Increased from 1.1rem */
             margin-bottom: 0.5rem;
             color: var(--primary-pink);
         }
 
         .mini-card p {
-            font-size: 0.95rem;
+            font-size: 1rem;
+            /* Increased from 0.95rem */
             color: var(--text-dim);
         }
 
@@ -348,8 +359,10 @@
             justify-content: center;
             padding: 2.5rem;
             border-radius: 30px;
-            font-size: 1.6rem;
-            font-weight: 500;
+            font-size: 1.8rem;
+            /* Increased from 1.6rem */
+            font-weight: 600;
+            /* Bolder */
             box-shadow: 0 15px 40px rgba(255, 133, 161, 0.2);
             border: 4px solid white;
         }
@@ -462,6 +475,22 @@
                 justify-content: center;
             }
         }
+
+        .setup-cat-item {
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+
+        .setup-cat-item:hover {
+            border-color: var(--medical-blue);
+            background: #f0f8ff;
+            transform: translateX(5px);
+        }
+
+        .setup-cat-item input[type="checkbox"] {
+            accent-color: var(--primary-pink);
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -475,7 +504,7 @@
 
     <div class="container">
         <header>
-            <div class="logo">🐱 Kustman ❤️</div>
+            <div class="logo">🐱 Kustman</div>
             <nav class="nav-buttons">
                 <button class="btn" id="nav-home">📚 Mis Notas</button>
                 <button class="btn btn-purple" id="nav-add">✨ Nueva</button>
@@ -488,7 +517,7 @@
             <div id="empty-container" class="empty-state">
                 <div style="font-size: 4rem; margin-bottom: 1rem;">😴</div>
                 <h2>Tu maletín está vacío...</h2>
-                <button class="btn btn-purple" onclick="showView('add')">Crear mi primera tarjeta 🩹</button>
+                <button class="btn btn-purple" onclick="prepareEditCard()">Crear mi primera tarjeta 🩹</button>
             </div>
 
             <div id="library-container" style="display: none;">
@@ -503,11 +532,55 @@
             </div>
         </main>
 
+        <!-- CATEGORIES VIEW -->
+        <section id="view-categories" class="view">
+            <h2 style="margin-bottom: 2rem; color: var(--primary-pink); text-align: center;">📂 Gestión de Categorías
+            </h2>
+
+            <div class="card-form" style="margin-bottom: 2rem;">
+                <div style="display: flex; gap: 1rem;">
+                    <input type="text" id="cat-name-input" placeholder="Nombre de la categoría..."
+                        style="flex:1; padding: 0.8rem; border-radius: 15px; border: 2px solid var(--secondary-pink); outline:none;">
+                    <button class="btn" id="btn-save-cat" onclick="saveCategory()">✨ Crear Categoría</button>
+                </div>
+            </div>
+
+            <div class="flashcards-grid" id="categories-list">
+                <!-- Categories Injection -->
+            </div>
+        </section>
+
+        <!-- GAME SETUP VIEW -->
+        <section id="view-setup" class="view">
+            <div class="results-view" style="max-width: 600px; margin: 0 auto; padding: 2rem;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🎒</div>
+                <h2 style="margin-bottom: 1rem;">¿Qué vamos a estudiar hoy?</h2>
+                <p style="color: var(--text-dim); margin-bottom: 2rem;">Selecciona las categorías que quieres repasar
+                </p>
+
+                <div class="flashcards-grid" id="setup-categories-list"
+                    style="margin-bottom: 2rem; grid-template-columns: 1fr; text-align: left;">
+                    <!-- Setup List Injection -->
+                </div>
+
+                <button class="btn btn-purple"
+                    style="width: 100%; justify-content: center; font-size: 1.2rem; padding: 1rem;"
+                    onclick="startGameFromSetup()">🚀 ¡A Estudiar!</button>
+            </div>
+        </section>
+
         <!-- ADD VIEW -->
         <section id="view-add" class="view">
             <div class="card-form">
-                <h2 style="margin-bottom: 2rem; color: var(--primary-pink); text-align: center;">🍎 Nueva Tarjeta de
-                    Estudio</h2>
+                <h2 id="form-title" style="margin-bottom: 2rem; color: var(--primary-pink); text-align: center;">🍎
+                    Nueva Tarjeta de Estudio</h2>
+                <div class="form-group">
+                    <label>Categoría</label>
+                    <select id="card-category"
+                        style="width: 100%; padding: 0.8rem; border-radius: 15px; border: 2px solid var(--secondary-pink); background: white; outline: none; color: var(--text-main);">
+                        <!-- Options injected via JS -->
+                    </select>
+                </div>
                 <div class="form-group">
                     <label>Frente (Concepto o Síntoma)</label>
                     <textarea id="card-front" placeholder="Ej: Anatomía del corazón..."></textarea>
@@ -614,13 +687,44 @@
     <script>
         // --- State Management ---
         const LS_KEY = 'yuki_flashcards_app';
-        let flashcards = JSON.parse(localStorage.getItem(LS_KEY)) || [];
+        const LS_KEY_CATS = 'yuki_flashcards_cats';
+
+        // Default Data
+        let flashcards = [];
+        let categories = [];
+
+        // Load Data & Migrate
+        function loadData() {
+            const storedCards = localStorage.getItem(LS_KEY);
+            const storedCats = localStorage.getItem(LS_KEY_CATS);
+
+            if (storedCats) {
+                categories = JSON.parse(storedCats);
+            } else {
+                categories = [{ id: 'default', name: 'General 🌟' }];
+                localStorage.setItem(LS_KEY_CATS, JSON.stringify(categories));
+            }
+
+            if (storedCards) {
+                flashcards = JSON.parse(storedCards);
+                // Migration: Assign 'default' category if missing
+                let migrated = false;
+                flashcards.forEach(card => {
+                    if (!card.categoryId) {
+                        card.categoryId = 'default';
+                        migrated = true;
+                    }
+                });
+                if (migrated) localStorage.setItem(LS_KEY, JSON.stringify(flashcards));
+            }
+        }
 
         let gameState = {
+            selectedCategories: [],
+            shuffled: [],
             currentIndex: 0,
             success: 0,
-            fail: 0,
-            shuffled: []
+            fail: 0
         };
 
         // --- DOM Elements ---
@@ -630,6 +734,8 @@
         const libraryContainer = document.getElementById('library-container');
         const startGameBtn = document.getElementById('start-game-btn');
         const mainFlipCard = document.getElementById('main-flip-card');
+        const categorySelect = document.getElementById('card-category');
+        const gameSetupGrid = document.getElementById('game-setup-grid');
 
         // --- Navigation ---
         function showView(viewId) {
@@ -640,36 +746,190 @@
             }
 
             if (viewId === 'home') renderLibrary();
+            if (viewId === 'categories') renderCategories(); // New view
+            if (viewId === 'setup') renderGameSetup();      // New view
             window.scrollTo(0, 0);
         }
 
         document.getElementById('nav-home').addEventListener('click', () => showView('home'));
-        document.getElementById('nav-add').addEventListener('click', () => showView('add'));
-        startGameBtn.addEventListener('click', initGame);
+        document.getElementById('nav-add').addEventListener('click', () => prepareEditCard()); // Modified to support clean add
+        startGameBtn.addEventListener('click', () => showView('setup')); // Changed to Setup view
 
-        // --- CRUD Logic ---
+        // Add Category Nav Button
+        const navContainer = document.querySelector('.nav-buttons');
+        const catBtn = document.createElement('button');
+        catBtn.className = 'btn';
+        catBtn.innerHTML = '📂 Categorías';
+        catBtn.onclick = () => showView('categories');
+        navContainer.insertBefore(catBtn, document.getElementById('nav-add'));
+
+
+        // --- Category Logic ---
+        function saveCategory() {
+            const nameInput = document.getElementById('cat-name-input');
+            const name = nameInput.value.trim();
+            if (!name) return showToast('¡El nombre no puede estar vacío! 😿', true);
+
+            const editingId = nameInput.dataset.editingId;
+
+            if (editingId) {
+                const cat = categories.find(c => c.id === editingId);
+                if (cat) cat.name = name;
+                delete nameInput.dataset.editingId;
+                document.getElementById('btn-save-cat').textContent = '✨ Crear Categoría';
+                showToast('Categoría actualizada 📝');
+            } else {
+                const newCat = { id: Date.now().toString(), name };
+                categories.push(newCat);
+                showToast('Categoría creada ✨');
+            }
+
+            localStorage.setItem(LS_KEY_CATS, JSON.stringify(categories));
+            nameInput.value = '';
+            renderCategories();
+        }
+
+        function editCategory(id) {
+            const cat = categories.find(c => c.id === id);
+            if (!cat) return;
+            const input = document.getElementById('cat-name-input');
+            input.value = cat.name;
+            input.dataset.editingId = id;
+            document.getElementById('btn-save-cat').innerHTML = '💾 Guardar Cambios';
+            window.scrollTo(0, 0);
+        }
+
+        function deleteCategory(id) {
+            if (id === 'default') return showToast('No puedes borrar la categoría por defecto 🚫', true);
+
+            // Check if cards exist in this category
+            const hasCards = flashcards.some(c => c.categoryId === id);
+            if (hasCards) {
+                if (!confirm('Esta categoría tiene cartas. ¿Deseas borrarla y mover sus cartas a "General"?')) return;
+                flashcards.forEach(c => {
+                    if (c.categoryId === id) c.categoryId = 'default';
+                });
+                localStorage.setItem(LS_KEY, JSON.stringify(flashcards));
+            } else {
+                if (!confirm('¿Borrar categoría?')) return;
+            }
+
+            categories = categories.filter(c => c.id !== id);
+            localStorage.setItem(LS_KEY_CATS, JSON.stringify(categories));
+
+            // Reset form if editing this one
+            const input = document.getElementById('cat-name-input');
+            if (input.dataset.editingId === id) {
+                input.value = '';
+                delete input.dataset.editingId;
+                document.getElementById('btn-save-cat').textContent = '✨ Crear Categoría';
+            }
+
+            renderCategories();
+            showToast('Categoría eliminada 🗑️');
+        }
+
+        function renderCategories() {
+            const list = document.getElementById('categories-list');
+            list.innerHTML = '';
+
+            if (categories.length === 0) { // Should technically not happen due to default
+                categories = [{ id: 'default', name: 'General 🌟' }];
+            }
+
+            categories.forEach(cat => {
+                const el = document.createElement('div');
+                el.className = 'mini-card';
+                el.style.display = 'flex';
+                el.style.justifyContent = 'space-between';
+                el.style.alignItems = 'center';
+                el.innerHTML = `
+                    <h3 style="margin:0">${cat.name}</h3>
+                    <div style="display:flex; gap:0.5rem">
+                        <button class="btn" style="padding: 0.3rem 0.6rem; font-size:0.8rem" onclick="editCategory('${cat.id}')">✏️</button>
+                        ${cat.id !== 'default' ? `<button class="btn btn-danger" style="padding: 0.3rem 0.6rem; font-size:0.8rem" onclick="deleteCategory('${cat.id}')">🗑️</button>` : ''}
+                    </div>
+                `;
+                list.appendChild(el);
+            });
+        }
+
+        // --- Card CRUD Logic ---
+        let editingCardId = null;
+
+        function prepareEditCard(id = null) {
+            editingCardId = id;
+            const frontInput = document.getElementById('card-front');
+            const backInput = document.getElementById('card-back');
+            const catSelect = document.getElementById('card-category');
+
+            // Safety: Ensure categories exist
+            if (categories.length === 0) {
+                categories = [{ id: 'default', name: 'General 🌟' }];
+                localStorage.setItem(LS_KEY_CATS, JSON.stringify(categories));
+            }
+
+            // Populate Categories Dropdown
+
+            // Populate Categories Dropdown
+            catSelect.innerHTML = '';
+            categories.forEach(cat => {
+                const opt = document.createElement('option');
+                opt.value = cat.id;
+                opt.textContent = cat.name;
+                catSelect.appendChild(opt);
+            });
+
+            if (id) {
+                const card = flashcards.find(c => c.id === id);
+                if (card) {
+                    frontInput.value = card.front;
+                    backInput.value = card.back;
+                    catSelect.value = card.categoryId || 'default';
+                    document.getElementById('form-title').textContent = '✏️ Editar Tarjeta';
+                }
+            } else {
+                frontInput.value = '';
+                backInput.value = '';
+                if (categories.length > 0) catSelect.value = categories[0].id; // Default to first
+                document.getElementById('form-title').textContent = '🍎 Nueva Tarjeta';
+            }
+
+            showView('add');
+        }
+
         function saveCard() {
             const front = document.getElementById('card-front').value.trim();
             const back = document.getElementById('card-back').value.trim();
+            const categoryId = document.getElementById('card-category').value;
 
             if (!front || !back) {
                 showToast('¡Ay! Faltan datos en la receta 🩺', true);
                 return;
             }
 
-            const newCard = {
-                id: Date.now(),
-                front,
-                back
-            };
+            if (editingCardId) {
+                // Update existing
+                const card = flashcards.find(c => c.id === editingCardId);
+                if (card) {
+                    card.front = front;
+                    card.back = back;
+                    card.categoryId = categoryId;
+                    showToast('Tarjeta actualizada 📝');
+                }
+            } else {
+                // Create new
+                const newCard = {
+                    id: Date.now(),
+                    front,
+                    back,
+                    categoryId
+                };
+                flashcards.push(newCard);
+                showToast('¡Tarjeta guardada! 🐾');
+            }
 
-            flashcards.push(newCard);
             localStorage.setItem(LS_KEY, JSON.stringify(flashcards));
-
-            document.getElementById('card-front').value = '';
-            document.getElementById('card-back').value = '';
-
-            showToast('¡Tarjeta guardada en el historial! 🐾');
             showView('home');
         }
 
@@ -702,24 +962,124 @@
             libraryContainer.style.display = 'block';
             startGameBtn.disabled = false;
 
+            // Group by Category
+            const cardsByCat = {};
+            categories.forEach(cat => cardsByCat[cat.id] = []);
             flashcards.forEach(card => {
-                const cardEl = document.createElement('div');
-                cardEl.className = 'mini-card';
-                cardEl.innerHTML = `
-                    <button class="delete-card" onclick="deleteCard(${card.id})">×</button>
-                    <div style="font-size: 0.8rem; color: var(--medical-blue); margin-bottom: 0.3rem;">📋 Registro #${card.id.toString().slice(-4)}</div>
-                    <h3>${card.front}</h3>
-                    <p>${card.back.substring(0, 100)}${card.back.length > 100 ? '...' : ''}</p>
+                const catId = card.categoryId || 'default';
+                if (!cardsByCat[catId]) cardsByCat[catId] = []; // Handle Deleted Categories
+                cardsByCat[catId].push(card);
+            });
+
+            // Render Groups
+            for (const catId in cardsByCat) {
+                const cards = cardsByCat[catId];
+                if (cards.length === 0) continue;
+
+                const category = categories.find(c => c.id === catId) || { name: 'Sin Categoría 🕵️‍♀️' };
+
+                const groupTitle = document.createElement('h3');
+                groupTitle.style.gridColumn = '1 / -1';
+                groupTitle.style.marginTop = '1rem';
+                groupTitle.style.color = 'var(--text-dim)';
+                groupTitle.style.borderBottom = '2px dashed var(--medical-green)';
+                groupTitle.style.paddingBottom = '0.5rem';
+                groupTitle.textContent = category.name;
+                cardsGrid.appendChild(groupTitle);
+
+                cards.forEach(card => {
+                    const cardEl = document.createElement('div');
+                    cardEl.className = 'mini-card';
+                    cardEl.innerHTML = `
+                        <div style="position:absolute; top:10px; right:10px; display:flex; gap:0.3rem">
+                            <button class="delete-card" style="position:static; width:30px; height:30px; background:#e0f7fa; color:var(--medical-blue); border-color:var(--medical-blue)" onclick="prepareEditCard(${card.id})">✏️</button>
+                            <button class="delete-card" style="position:static; width:30px; height:30px;" onclick="deleteCard(${card.id})">×</button>
+                        </div>
+                        <div style="font-size: 0.8rem; color: var(--medical-blue); margin-bottom: 0.3rem;">📋 Registro #${card.id.toString().slice(-4)}</div>
+                        <h3>${card.front}</h3>
+                        <p>${card.back.substring(0, 100)}${card.back.length > 100 ? '...' : ''}</p>
+                    `;
+                    cardsGrid.appendChild(cardEl);
+                });
+            }
+        }
+
+        // --- Game Setup Logic ---
+        function renderGameSetup() {
+            const container = document.getElementById('setup-categories-list');
+            container.innerHTML = '';
+
+            // Checkbox for "All"
+            const allDiv = document.createElement('div');
+            allDiv.className = 'mini-card';
+            allDiv.style.cursor = 'pointer';
+            allDiv.style.display = 'flex';
+            allDiv.style.alignItems = 'center';
+            allDiv.style.gap = '1rem';
+            allDiv.style.background = '#eef';
+            allDiv.innerHTML = `
+                <input type="checkbox" id="setup-cat-all" style="transform: scale(1.5);">
+                <h3 style="margin:0">Seleccionar Todo 🌍</h3>
+            `;
+            allDiv.onclick = (e) => {
+                if (e.target.tagName !== 'INPUT') {
+                    const cb = document.getElementById('setup-cat-all');
+                    cb.checked = !cb.checked;
+                    toggleAllCats(cb.checked);
+                } else {
+                    toggleAllCats(e.target.checked);
+                }
+            };
+            container.appendChild(allDiv);
+
+            // Individual Categories
+            categories.forEach(cat => {
+                // Only show categories that have cards
+                const count = flashcards.filter(c => (c.categoryId || 'default') === cat.id).length;
+                if (count === 0) return;
+
+                const div = document.createElement('div');
+                div.className = 'mini-card setup-cat-item';
+                div.setAttribute('data-id', cat.id);
+                div.style.cursor = 'pointer';
+                div.style.display = 'flex';
+                div.style.justifyContent = 'space-between';
+                div.style.alignItems = 'center';
+                div.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:1rem">
+                        <input type="checkbox" class="setup-cb" value="${cat.id}" style="transform: scale(1.5);">
+                        <h3 style="margin:0">${cat.name}</h3>
+                    </div>
+                    <span style="background:var(--secondary-pink); color:white; padding:0.2rem 0.6rem; border-radius:20px; font-size:0.8rem">${count} cartas</span>
                 `;
-                cardsGrid.appendChild(cardEl);
+                div.onclick = (e) => {
+                    if (e.target.tagName !== 'INPUT') {
+                        const cb = div.querySelector('input');
+                        cb.checked = !cb.checked;
+                    }
+                };
+                container.appendChild(div);
             });
         }
 
-        // --- Game Logic ---
-        function initGame() {
-            if (flashcards.length === 0) return;
+        function toggleAllCats(checked) {
+            document.querySelectorAll('.setup-cb').forEach(cb => cb.checked = checked);
+        }
 
-            gameState.shuffled = [...flashcards].sort(() => Math.random() - 0.5);
+        function startGameFromSetup() {
+            const selectedIds = Array.from(document.querySelectorAll('.setup-cb:checked')).map(cb => cb.value);
+            if (selectedIds.length === 0) return showToast('¡Debes elegir al menos una categoría! 😼', true);
+
+            // Filter Cards
+            const cardsToPlay = flashcards.filter(c => selectedIds.includes(c.categoryId || 'default'));
+            initGame(cardsToPlay);
+        }
+
+        // --- Game Logic ---
+        function initGame(cards) {
+            if (!cards || cards.length === 0) return;
+
+            gameState.shuffled = [...cards].sort(() => Math.random() - 0.5);
             gameState.currentIndex = 0;
             gameState.success = 0;
             gameState.fail = 0;
@@ -765,8 +1125,36 @@
         }
 
         function finishGame() {
+            const total = gameState.success + gameState.fail;
+            const successRate = total === 0 ? 0 : (gameState.success / total);
+
             document.getElementById('final-success').textContent = gameState.success;
             document.getElementById('final-fail').textContent = gameState.fail;
+
+            const titleObj = document.querySelector('#view-results h2');
+            const msgObj = document.querySelector('#view-results p');
+            const emojiObj = document.querySelector('#view-results div[style*="font-size: 4rem"]');
+
+            if (gameState.fail === 0 && total > 0) {
+                // Perfect Score
+                emojiObj.textContent = '🏆';
+                titleObj.textContent = 'EXCELENTE! 🌟';
+                titleObj.style.color = 'var(--success)';
+                msgObj.textContent = '¡Eres la mejor!, te adoro. 😻';
+            } else if (successRate < 0.5) {
+                // High Failure Rate (< 50%)
+                emojiObj.textContent = '🩹';
+                titleObj.textContent = '¡Ánimo Anto! ❤️‍🩹';
+                titleObj.style.color = 'var(--text-main)';
+                msgObj.textContent = 'No te desanimes. ¡Vuelve a intentarlo!';
+            } else {
+                // Normal
+                emojiObj.textContent = '🎉';
+                titleObj.textContent = '¡Muy bien!';
+                titleObj.style.color = 'var(--primary-pink)';
+                msgObj.innerHTML = 'Has completado tu ronda de estudio.<br>Sigue así bb uwu.';
+            }
+
             showView('results');
         }
 
@@ -781,8 +1169,8 @@
         }
 
         // --- Initial Load ---
+        loadData();
         renderLibrary();
-
     </script>
 </body>
 
