@@ -356,7 +356,12 @@ async function saveCategory() {
                 headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrftoken },
                 body: JSON.stringify({ name })
             });
-            if (res.ok) showToast('Categoría creada ✨');
+            if (res.ok) {
+                showToast('Categoría creada ✨');
+                // Remove shake if it exists
+                const navCat = document.getElementById('nav-categories');
+                if (navCat) navCat.classList.remove('shake');
+            }
         }
         nameInput.value = '';
         loadCategories();
@@ -401,9 +406,14 @@ function prepareEditCard(id = null) {
     editingCardId = id;
     // ensure categories are loaded before showing dropdown
     if (categories.length === 0) {
-        // Fallback or force fetch?
-        // We assume they are loaded because we are in the app.
-        // But if empty, warn?
+        showToast('¡Crea una categoría para poder comenzar a guardar flashcards! 😿', true);
+        const navCat = document.getElementById('nav-categories');
+        if (navCat) {
+            navCat.classList.add('shake');
+            // Scroll to top or ensure nav is visible? 
+            // The user might be anywhere, but the nav is fixed/top usually.
+        }
+        return;
     }
 
     showView('add');
@@ -525,8 +535,8 @@ function updateGameUI() {
     if (mainFlipCard) mainFlipCard.classList.remove('flipped');
     document.getElementById('game-controls').classList.remove('show');
 
-    frontEl.textContent = card.front;
-    backEl.textContent = card.back;
+    frontEl.innerHTML = `<div class="card-content">${card.front}</div>`;
+    backEl.innerHTML = `<div class="card-content">${card.back}</div>`;
 
     document.getElementById('current-card-idx').textContent = `${gameState.currentIndex + 1}/${gameState.shuffled.length}`;
     document.getElementById('success-count').textContent = gameState.success;

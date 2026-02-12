@@ -347,16 +347,37 @@ header {
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2.5rem;
+    flex-direction: column;
+    /* align-items: center;  <-- Removed to let card-content handle width/centering */
+    /* justify-content: center; <-- Removed to use margin: auto on child */
+    padding: 0;
     border-radius: 30px;
-    font-size: 1.8rem;
-    /* Increased from 1.6rem */
+    font-size: 1.4rem;
     font-weight: 600;
-    /* Bolder */
     box-shadow: 0 15px 40px rgba(255, 133, 161, 0.2);
     border: 4px solid white;
+    overflow: hidden;
+}
+
+.card-content {
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    /* Use flex centering but allow scroll */
+    justify-content: center;
+    align-items: center;
+    scrollbar-width: thin;
+    scrollbar-color: var(--secondary-pink) transparent;
+}
+
+/* Ensure content stays centered unless it overflows */
+.card-content:before,
+.card-content:after {
+    content: "";
+    margin: auto;
 }
 
 .flip-card-front {
