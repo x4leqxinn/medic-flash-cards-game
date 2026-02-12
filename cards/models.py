@@ -18,11 +18,11 @@ class Flashcard(models.Model):
         return f"{self.front[:30]}..."
 
 class StudySession(models.Model):
-    finished_at = models.DateTimeField(auto_now_add=True)
+    start_time = models.DateTimeField(null=True, blank=True)
+    end_time = models.DateTimeField(null=True, blank=True)
     total_cards = models.IntegerField(default=0)
     success_count = models.IntegerField(default=0)
     fail_count = models.IntegerField(default=0)
-    duration_seconds = models.IntegerField(default=0)
 
     def __str__(self):
-        return f"Session at {self.finished_at}"
+        return f"Session finished at {self.end_time}"

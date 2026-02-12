@@ -28,11 +28,23 @@ def api_categories(request):
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=400)
 
-@require_http_methods(["DELETE"])
+@require_http_methods(["DELETE", "PUT"])
 def api_category_detail(request, pk):
     cat = get_object_or_404(Category, pk=pk)
-    cat.delete()
-    return JsonResponse({'status': 'deleted'})
+    
+    if request.method == "DELETE":
+        cat.delete()
+        return JsonResponse({'status': 'deleted'})
+
+    if request.method == "PUT":
+        try:
+            data = json.loads(request.body)
+            if data.get('name'):
+                cat.name = data['name']
+                cat.save()
+            return JsonResponse({'id': cat.id, 'name': cat.name})
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
 
 # --- API Cards ---
 
@@ -66,11 +78,29 @@ def api_cards(request):
         except Exception as e:
              return JsonResponse({'error': str(e)}, status=400)
 
-@require_http_methods(["DELETE"])
+@require_http_methods(["DELETE", "PUT"])
 def api_card_detail(request, pk):
     card = get_object_or_404(Flashcard, pk=pk)
-    card.delete()
-    return JsonResponse({'status': 'deleted'})
+    
+    if request.method == "DELETE":
+        card.delete()
+        return JsonResponse({'status': 'deleted'})
+
+    if request.method == "PUT":
+        try:
+            data = json.loads(request.body)
+            if data.get('front'): card.front = data['front']
+            if data.get('back'): card.back = data['back']
+            if data.get('category_id'): card.category_id = data['category_id']
+            card.save()
+            return JsonResponse({
+                'id': card.id,
+                'category_id': card.category_id,
+                'front': card.front,
+                'back': card.back
+            })
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
 
 
 # --- API Stats ---
@@ -82,13 +112,15 @@ def api_stats(request):
         total = data.get('total', 0)
         success = data.get('success', 0)
         fail = data.get('fail', 0)
-        duration = data.get('duration', 0)
+        start_time_iso = data.get('start_time')
+        end_time_iso = data.get('end_time')
 
         session = StudySession.objects.create(
             total_cards=total,
             success_count=success,
             fail_count=fail,
-            duration_seconds=duration
+            start_time=start_time_iso,
+            end_time=end_time_iso
         )
         return JsonResponse({'id': session.id}, status=201)
     except Exception as e:
