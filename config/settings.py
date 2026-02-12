@@ -25,8 +25,7 @@ SECRET_KEY = 'django-insecure-ysy*wh%0)ebx&dj&6+x4+66q3ok$=s*cbd18#6chxnev=$ew4&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
-
+ALLOWED_HOSTS = ['165.73.244.119', 'localhost', '127.0.0.1']
 
 # Application definition
 
@@ -41,6 +40,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'config.middlewares.ChileOnlyMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -112,8 +112,17 @@ USE_I18N = True
 USE_TZ = True
 
 
+import os
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static_files')
+
+# (Opcional) Si tienes archivos estáticos propios en una carpeta de tu proyecto
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
